@@ -14,6 +14,7 @@ namespace BlogsConsole
             string ans;
             var db = new BloggingContext();
 
+
             try
             {
 
@@ -25,6 +26,8 @@ namespace BlogsConsole
                     Console.WriteLine("Enter 2 to VIEW ALL BLOGS");
                     Console.WriteLine("Enter 3 to ADD POST TO BLOG");
                     Console.WriteLine("Enter QUIT to exit");
+                    Console.WriteLine("----------------------------");
+
                     ans = Console.ReadLine();
 
                     switch (ans)
@@ -59,8 +62,34 @@ namespace BlogsConsole
                             break;
 
                         case "3":
+
+                            // Create and save new Post
                             logger.Info("Choice: Create New Post");
-                            Console.WriteLine("Nothing in here yet");
+
+                            Console.WriteLine("Enter the name of the blog to add post to");
+                            var blogName = Console.ReadLine().ToLower();
+
+                            var blogQuery = db.Blogs.Where(b => b.Name.Equals(blogName));
+                            var blogID = 0;
+
+                            foreach (Blog b in blogQuery)
+                            {
+                                blogID = b.BlogId;
+                            }
+
+
+                            Console.WriteLine("Enter Post Title");
+                            var title = Console.ReadLine().ToLower();
+
+                            Console.WriteLine("Type your Post");
+                            var content = Console.ReadLine();
+
+                            var post = new Post { Title = title, Content = content, BlogId = blogID };
+
+                            db.AddPost(post);
+
+                            logger.Info("Post Added - {title}", title);
+
 
                             break;
 
