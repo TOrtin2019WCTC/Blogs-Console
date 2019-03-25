@@ -2,7 +2,16 @@
 using System;
 using System.Linq;
 
-
+/*
+   For testing purposes, the blog names in my database are:
+   
+   hi
+   est
+   working?
+   snowflake tears
+   
+   
+*/
 namespace BlogsConsole
 {
     class MainClass
@@ -22,10 +31,12 @@ namespace BlogsConsole
                 {
 
                     Console.WriteLine("----------------------------");
-                    Console.WriteLine("\nEnter 1 to ADD BLOG");
+                    Console.WriteLine();
+                    Console.WriteLine("Enter 1 to ADD BLOG");
                     Console.WriteLine("Enter 2 to VIEW ALL BLOGS");
                     Console.WriteLine("Enter 3 to ADD POST TO BLOG");
                     Console.WriteLine("Enter QUIT to exit");
+                    Console.WriteLine();
                     Console.WriteLine("----------------------------");
 
                     ans = Console.ReadLine();
@@ -70,52 +81,82 @@ namespace BlogsConsole
                             var blogName = Console.ReadLine().ToLower();
 
                             var blogQuery = db.Blogs.Where(b => b.Name.Equals(blogName));
-                            var blogID = 0;
-                            bool blogExists = false;
-                            string resp = null;
 
-                            while (blogExists == false || resp != "exit")
+                            bool blogExists;
+
+                            blogExists = blogQuery.Any() ? true : false;
+
+                            var blogID = 0;
+
+
+
+                            if (blogExists == true)
                             {
 
-                                if (blogQuery != null)
+                                foreach (Blog b in blogQuery)
                                 {
-                                    blogExists = true;
-                                    foreach (Blog b in blogQuery)
-                                    {
-                                        blogID = b.BlogId;
-                                    }
-
-                                    Console.WriteLine("Enter Post Title");
-                                    var title = Console.ReadLine().ToLower();
-
-                                    Console.WriteLine("Type your Post");
-                                    var content = Console.ReadLine();
-
-                                    var post = new Post { Title = title, Content = content, BlogId = blogID };
-
-                                    db.AddPost(post);
-
-                                    logger.Info("Post Added - {title}", title);
-
+                                    blogID = b.BlogId;
                                 }
-                                else
+
+                                Console.WriteLine("Enter Post Title");
+                                var title = Console.ReadLine().ToLower();
+
+                                Console.WriteLine("Type your Post");
+                                var content = Console.ReadLine();
+
+                                var post = new Post { Title = title, Content = content, BlogId = blogID };
+
+                                db.AddPost(post);
+
+                                logger.Info("Post Added - {title}", title);
+
+                            }
+                            else
+
+                            {
+                                string resp = null;
+
+                                while (resp != "exit" && blogExists == false)
                                 {
                                     Console.WriteLine("There is no blog with that name");
                                     blogExists = false;
-                                    Console.WriteLine("ReEnter the name of the blog or type EXIT to quit");
+                                    Console.WriteLine("Re-Enter the name of the blog or type EXIT to return to menu");
                                     resp = Console.ReadLine().ToLower();
                                     if (resp != "exit")
                                     {
                                         blogQuery = db.Blogs.Where(b => b.Name.Equals(blogName));
+                                        blogExists = blogQuery.Any() ? true : false;
+
+                                        if (blogExists == true)
+                                        {
+                                            foreach (Blog b in blogQuery)
+                                            {
+                                                blogID = b.BlogId;
+                                            }
+
+                                            Console.WriteLine("Enter Post Title");
+                                            var title = Console.ReadLine().ToLower();
+
+                                            Console.WriteLine("Type your Post");
+                                            var content = Console.ReadLine();
+
+                                            var post = new Post { Title = title, Content = content, BlogId = blogID };
+
+                                            db.AddPost(post);
+
+                                            logger.Info("Post Added - {title}", title);
+                                        }
                                     }
-
                                 }
+
                             }
-
-
                             break;
 
                     }
+
+
+
+
 
                 } while (!ans.Equals("quit"));
 
