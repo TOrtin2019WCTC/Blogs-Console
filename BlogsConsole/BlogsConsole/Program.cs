@@ -71,24 +71,46 @@ namespace BlogsConsole
 
                             var blogQuery = db.Blogs.Where(b => b.Name.Equals(blogName));
                             var blogID = 0;
+                            bool blogExists = false;
+                            string resp = null;
 
-                            foreach (Blog b in blogQuery)
+                            while (blogExists == false || resp != "exit")
                             {
-                                blogID = b.BlogId;
+
+                                if (blogQuery != null)
+                                {
+                                    blogExists = true;
+                                    foreach (Blog b in blogQuery)
+                                    {
+                                        blogID = b.BlogId;
+                                    }
+
+                                    Console.WriteLine("Enter Post Title");
+                                    var title = Console.ReadLine().ToLower();
+
+                                    Console.WriteLine("Type your Post");
+                                    var content = Console.ReadLine();
+
+                                    var post = new Post { Title = title, Content = content, BlogId = blogID };
+
+                                    db.AddPost(post);
+
+                                    logger.Info("Post Added - {title}", title);
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("There is no blog with that name");
+                                    blogExists = false;
+                                    Console.WriteLine("ReEnter the name of the blog or type EXIT to quit");
+                                    resp = Console.ReadLine().ToLower();
+                                    if (resp != "exit")
+                                    {
+                                        blogQuery = db.Blogs.Where(b => b.Name.Equals(blogName));
+                                    }
+
+                                }
                             }
-
-
-                            Console.WriteLine("Enter Post Title");
-                            var title = Console.ReadLine().ToLower();
-
-                            Console.WriteLine("Type your Post");
-                            var content = Console.ReadLine();
-
-                            var post = new Post { Title = title, Content = content, BlogId = blogID };
-
-                            db.AddPost(post);
-
-                            logger.Info("Post Added - {title}", title);
 
 
                             break;
