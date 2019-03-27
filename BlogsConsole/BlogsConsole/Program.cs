@@ -77,7 +77,7 @@ namespace BlogsConsole
                             // Create and save new Post
                             logger.Info("Choice: Create New Post");
 
-                            Console.WriteLine("Enter the name of the blog to add post to");
+                            Console.WriteLine("ENTER THE NAME OF BLOG TO ADD POST TO: ");
                             var blogName = Console.ReadLine().ToLower();
 
                             var blogQuery = db.Blogs.Where(b => b.Name.Equals(blogName));
