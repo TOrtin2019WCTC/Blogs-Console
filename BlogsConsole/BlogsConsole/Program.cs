@@ -90,7 +90,7 @@ namespace BlogsConsole
 
 
 
-                            if (blogExists == true)
+                            if (blogExists)
                             {
 
                                 foreach (Blog b in blogQuery)
@@ -101,8 +101,26 @@ namespace BlogsConsole
                                 Console.WriteLine("Enter Post Title");
                                 var title = Console.ReadLine().ToLower();
 
+                                // handles title being null
+                                while (title == null)
+                                {
+                                    logger.Warn("POST TITLE WAS NULL");
+
+                                    Console.WriteLine("Title cannot be blank, Re-enter Post Title: ");
+                                    title = Console.ReadLine();
+                                }
+
                                 Console.WriteLine("Type your Post");
                                 var content = Console.ReadLine();
+
+                                // handles content being empty
+                                while (content == null)
+                                {
+                                    logger.Warn("POST CONTENT WAS EMPTY");
+
+                                    Console.WriteLine("Content cannot be empty, Re-type Post: ");
+                                    content = Console.ReadLine();
+                                }
 
                                 var post = new Post { Title = title, Content = content, BlogId = blogID };
 
@@ -114,6 +132,7 @@ namespace BlogsConsole
                             else
 
                             {
+                                // handles user entered blog title not existing in the database
                                 string resp = null;
 
                                 while (resp != "exit" && blogExists == false)
