@@ -274,10 +274,43 @@ namespace BlogsConsole
                             int counter = 1;
                             foreach (var blog in postDisplayQuery)
                             {
-
                                 Console.WriteLine($"{counter}) Posts from {blog.Name}");
                                 counter++;
                             }
+
+                            string resp = Console.ReadLine();
+                            var displayPosts = db.Posts.OrderBy(p => p.PostId);
+
+                            switch (resp)
+                            {
+                                case "0":
+                                    Console.WriteLine($"{displayPosts.Count()} Posts returned");
+                                    Console.WriteLine();
+
+                                    var getBlogName = (from p in db.Posts
+                                                       join b in db.Blogs
+                                             on p.BlogId equals b.BlogId
+                                                       select new
+                                                       {
+                                                           b.Name,
+                                                           p.Title,
+                                                           p.Content
+
+                                                       }).ToList();
+
+
+                                    foreach (var posts in getBlogName)
+                                    {
+                                        Console.WriteLine($"Blog: {posts.Name}");
+                                        Console.WriteLine($"Title: {posts.Title}");
+                                        Console.WriteLine($"Content: {posts.Content}");
+                                        Console.WriteLine();
+                                    }
+                                    break;
+                            }
+
+
+
 
 
 
