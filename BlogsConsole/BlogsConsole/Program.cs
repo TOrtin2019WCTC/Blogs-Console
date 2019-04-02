@@ -3,16 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-/*
-   For testing purposes, the blog names in my database are:
-   
-   hi
-   est
-   working?
-   snowflake tears
-   
-   
-*/
+
 namespace BlogsConsole
 {
     class MainClass
@@ -42,7 +33,7 @@ namespace BlogsConsole
                     Console.WriteLine();
                     Console.WriteLine("----------------------------");
 
-                    ans = Console.ReadLine();
+                    ans = Console.ReadLine().ToLower();
 
                     switch (ans)
                     {
@@ -310,6 +301,7 @@ namespace BlogsConsole
 
 
                                         Console.WriteLine($"{getPostsFromSpecificBlog.Count()} Post(s) returned");
+                                        Console.WriteLine("\n");
                                         foreach (var post in getPostsFromSpecificBlog)
                                         {
                                             Console.WriteLine($"Blog: {post.Name}");
@@ -336,7 +328,7 @@ namespace BlogsConsole
                             else if (resp.Equals("0"))
                             {
                                 Console.WriteLine($"{displayPosts.Count()} Post(s) returned");
-                                Console.WriteLine();
+                                Console.WriteLine("\n");
 
                                 var getAllBlogs = (from p in db.Posts
                                                    join b in db.Blogs
