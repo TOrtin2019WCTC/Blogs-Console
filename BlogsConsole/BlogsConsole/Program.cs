@@ -23,6 +23,7 @@ namespace BlogsConsole
             logger.Info("Program started");
             string ans;
             var db = new BloggingContext();
+            List<int> blogIds;
 
 
             try
@@ -90,7 +91,7 @@ namespace BlogsConsole
                             logger.Info("Choice: Create New Post");
 
                             var blogListQuery = db.Blogs.OrderBy(b => b.BlogId);
-                            List<int> blogIds = new List<int>();
+                            blogIds = new List<int>();
                             string choice;
 
                             if (blogListQuery.Count() > 0)
@@ -266,57 +267,102 @@ namespace BlogsConsole
 
                         case "4":
 
+                            blogIds = new List<int>();
                             logger.Info("Choice: Display Posts");
                             Console.WriteLine("Select Blog's posts to display");
                             Console.WriteLine();
                             Console.WriteLine("0) Posts from all blogs");
                             var postDisplayQuery = db.Blogs.OrderBy(b => b.BlogId);
-                            int counter = 1;
+
+
                             foreach (var blog in postDisplayQuery)
                             {
-                                Console.WriteLine($"{counter}) Posts from {blog.Name}");
-                                counter++;
+                                Console.WriteLine($"{blog.BlogId}) Posts from {blog.Name}");
+                                blogIds.Add(blog.BlogId);
+
+
                             }
 
-                            string resp = Console.ReadLine();
                             var displayPosts = db.Posts.OrderBy(p => p.PostId);
 
-                            switch (resp)
+                            string resp = Console.ReadLine();
+                            int blogId;
+
+                            if (!resp.Equals("0") & !resp.Equals(null))
                             {
-                                case "0":
-                                    Console.WriteLine($"{displayPosts.Count()} Posts returned");
-                                    Console.WriteLine();
+                                try
+                                {
+                                    blogId = Int32.Parse(resp);
 
-                                    var getBlogName = (from p in db.Posts
-                                                       join b in db.Blogs
-                                             on p.BlogId equals b.BlogId
-                                                       select new
-                                                       {
-                                                           b.Name,
-                                                           p.Title,
-                                                           p.Content
-
-                                                       }).ToList();
-
-
-                                    foreach (var posts in getBlogName)
+                                    if (blogIds.Contains(blogId))
                                     {
-                                        Console.WriteLine($"Blog: {posts.Name}");
-                                        Console.WriteLine($"Title: {posts.Title}");
-                                        Console.WriteLine($"Content: {posts.Content}");
-                                        Console.WriteLine();
+                                        var getPostsFromSpecificBlog = (from p in db.Posts
+                                                                        join b in db.Blogs
+                                                                        on p.BlogId equals b.BlogId
+                                                                        where p.BlogId == blogId
+                                                                        select new
+                                                                        {
+                                                                            b.Name,
+                                                                            p.Title,
+                                                                            p.Content
+
+                                                                        }).ToList();
+
+
+                                        Console.WriteLine($"{getPostsFromSpecificBlog.Count()} Post(s) returned");
+                                        foreach (var post in getPostsFromSpecificBlog)
+                                        {
+                                            Console.WriteLine($"Blog: {post.Name}");
+                                            Console.WriteLine($"Title: {post.Title}");
+                                            Console.WriteLine($"Content: {post.Content}");
+                                            Console.WriteLine();
+                                        }
+
+
                                     }
-                                    break;
+                                    else
+                                    {
+                                        logger.Error("Blog does not exist in the database");
+                                    }
+
+
+                                }
+                                catch (FormatException)
+                                {
+                                    logger.Error("Invalid Blog ID");
+                                }
+
+                            }
+                            else if (resp.Equals("0"))
+                            {
+                                Console.WriteLine($"{displayPosts.Count()} Post(s) returned");
+                                Console.WriteLine();
+
+                                var getAllBlogs = (from p in db.Posts
+                                                   join b in db.Blogs
+                                                   on p.BlogId equals b.BlogId
+                                                   select new
+                                                   {
+                                                       b.Name,
+                                                       p.Title,
+                                                       p.Content
+
+                                                   }).ToList();
+
+
+                                foreach (var posts in getAllBlogs)
+                                {
+                                    Console.WriteLine($"Blog: {posts.Name}");
+                                    Console.WriteLine($"Title: {posts.Title}");
+                                    Console.WriteLine($"Content: {posts.Content}");
+                                    Console.WriteLine();
+                                }
+
+
                             }
 
-
-
-
-
-
-
-
                             break;
+
 
                     }
 
