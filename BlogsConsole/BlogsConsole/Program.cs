@@ -34,8 +34,9 @@ namespace BlogsConsole
                     Console.WriteLine("----------------------------");
                     Console.WriteLine();
                     Console.WriteLine("Enter 1 to ADD BLOG");
-                    Console.WriteLine("Enter 2 to VIEW ALL BLOGS");
+                    Console.WriteLine("Enter 2 to DISPLAY ALL BLOGS");
                     Console.WriteLine("Enter 3 to CREATE NEW POST");
+                    Console.WriteLine("Enter 4 to DISPLAY ALL POSTS");
                     Console.WriteLine("Enter QUIT to exit");
                     Console.WriteLine();
                     Console.WriteLine("----------------------------");
@@ -103,7 +104,7 @@ namespace BlogsConsole
                                     blogIds.Add(item.BlogId);
                                 }
 
-                                Console.WriteLine(blogIds);
+
                                 choice = Console.ReadLine();
 
                                 int blogChoice = 0;
@@ -120,7 +121,7 @@ namespace BlogsConsole
                                         // handles title being null
                                         while (title == null)
                                         {
-                                            logger.Warn("POST TITLE WAS NULL");
+                                            logger.Error("POST TITLE CANNOT BE NULL");
 
                                             Console.WriteLine("Title cannot be blank, Re-enter Post Title: ");
                                             title = Console.ReadLine();
@@ -132,7 +133,7 @@ namespace BlogsConsole
                                         // handles content being empty
                                         while (content == null)
                                         {
-                                            logger.Warn("POST CONTENT WAS EMPTY");
+                                            logger.Error("POST CONTENT CANNOT BE NULL");
 
                                             Console.WriteLine("Content cannot be empty, Re-type Post: ");
                                             content = Console.ReadLine();
@@ -155,10 +156,6 @@ namespace BlogsConsole
                                 {
                                     logger.Error("Invalid Blog Id");
                                 }
-
-
-
-
 
 
                             }
@@ -265,6 +262,27 @@ namespace BlogsConsole
                             //}
 
                             //}
+                            break;
+
+                        case "4":
+
+                            logger.Info("Choice: Display Posts");
+                            Console.WriteLine("Select Blog's posts to display");
+                            Console.WriteLine();
+                            Console.WriteLine("0) Posts from all blogs");
+                            var postDisplayQuery = db.Blogs.OrderBy(b => b.BlogId);
+                            int counter = 1;
+                            foreach (var blog in postDisplayQuery)
+                            {
+
+                                Console.WriteLine($"{counter}) Posts from {blog.Name}");
+                                counter++;
+                            }
+
+
+
+
+
                             break;
 
                     }
