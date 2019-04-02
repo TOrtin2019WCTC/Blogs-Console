@@ -181,7 +181,7 @@ namespace BlogsConsole
                             string resp = Console.ReadLine();
                             int blogId;
 
-                            if (!resp.Equals("0") & !resp.Equals(null))
+                            if (!resp.Equals("0") && !resp.Equals(null))
                             {
                                 try
                                 {
@@ -257,11 +257,7 @@ namespace BlogsConsole
 
                             break;
 
-
                     }
-
-
-
 
 
                 } while (!ans.Equals("quit"));
